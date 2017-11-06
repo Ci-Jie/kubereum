@@ -2,10 +2,7 @@ version: '3.3'
 services:
   dashboard:
     container_name: ethereum-dashboard
-    build:
-      context: ./dashboard
-      cache_from:
-        - ubuntu:16.04
+    image: cijie/kubereum-dashboard:0.1.0
     deploy:
       replicas: 1
       restart_policy:
@@ -15,11 +12,10 @@ services:
     environment:
       WS_SECRET: "88888"
     volumes:
-      - "/Users/apple/Desktop/kube-ethereum/env:/env"
+      - "/Users/apple/Desktop/kubereum/env:/env"
   node-1:
     container_name: ethereum-node-1
-    build:
-      context: ./node
+    image: cijie/kubereum-node:0.1.0
     deploy:
       replicas: 1
       resources:
@@ -35,13 +31,12 @@ services:
       INSTANCE_NAME: "node-1"
       WS_SECRET: "88888"
     volumes:
-      - "/Users/apple/Desktop/kube-ethereum/env:/env"
+      - "/Users/apple/Desktop/kubereum/env:/env"
     depends_on:
       - dashboard
   node-2:
     container_name: ethereum-node-2
-    build:
-      context: ./node
+    image: cijie/kubereum-node:0.1.0
     deploy:
       replicas: 1
       resources:
@@ -57,13 +52,12 @@ services:
       INSTANCE_NAME: "node-2"
       WS_SECRET: "88888"
     volumes:
-      - "/Users/apple/Desktop/kube-ethereum/env:/env"
+      - "/Users/apple/Desktop/kubereum/env:/env"
     depends_on:
       - dashboard
   monitor:
     container_name: ethereum-monitor
-    build:
-      context: ./monitor
+    image: cijie/kubereum-monitor:0.1.0
     deploy:
       replicas: 1
       resources:
@@ -73,7 +67,7 @@ services:
       restart_policy:
         condition: on-failture
     volumes:
-      - "/Users/apple/Desktop/kube-ethereum/env:/env"
+      - "/Users/apple/Desktop/kubereum/env:/env"
     depends_on:
       - dashboard
       - node-1

@@ -1,1 +1,1 @@
-{"dashboardAddress":"","enode":{},"chainID":"","nodes":[]}
+{"dashboardAddress":"172.25.0.2","enode":{"IP":"172.25.0.3","code":"enode://4f26134e2d17bb49ba4b104b7a2a3fd31301b73ca004a05292d5b540f52ad3c6c5c5d3e075229685d529340b22324f7ab939cd26360a30134fecdebe8c802c07@172.25.0.3:2000"},"chainID":897636995,"nodes":[{"IP":"172.25.0.3","account":[]},{"IP":"172.25.0.4","account":[]}]}
