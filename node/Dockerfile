@@ -4,11 +4,6 @@ MAINTAINER CiJie.Li(cjlee8110@gmail.com)
 
 USER root
 
-COPY genesis.json .
-COPY run.js .
-COPY package.json .
-COPY .babelrc .
-
 RUN apt-get update && \
 	apt-get install -y software-properties-common && \
 	add-apt-repository -y ppa:ethereum/ethereum && \
@@ -20,10 +15,13 @@ RUN apt-get update && \
 	git clone https://github.com/cubedro/eth-net-intelligence-api && \
 	cd eth-net-intelligence-api && \
 	npm install && \
-	npm install -g pm2
+	npm install -g pm2 && \
+	git clone http://git.nutc-imac.com/cjlee8110/kubereum.git && \
+	cd kubereum/node && \
+	npm install
 
-WORKDIR /
+WORKDIR /eth-net-intelligence-api/kubereum/node
 
 EXPOSE 2000 8545
 
-ENTRYPOINT ["node", "run", "start"]
+ENTRYPOINT ["npm", "run", "start"]
