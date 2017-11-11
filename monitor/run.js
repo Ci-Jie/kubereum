@@ -45,6 +45,23 @@ function post (url, method, params) {
   })
 }
 
+function checkExist (url) {
+  return new Promise((resolve, reject) => {
+    const options = {
+      method: 'GET',
+      url: `http://${url}:8545`,
+      json: true
+    }
+    rp(options)
+      .then((data) => {
+        resolve(true)
+      })
+      .catch((err) => {
+        resolve(false)
+      })
+  })
+}
+
 async function setEnode (env) {
   if (env.nodes.length > 0) {
     let nodeInfo = (await post(env.nodes[0].IP, 'admin_nodeInfo', [])).result.enode
@@ -67,12 +84,6 @@ async function connectAllNodes (env) {
   }
 }
 
-async function removeNode (env) {
-  const number = env.nodes.indexOf(env.nodes[index].IP)
-  env.nodes.splice(number, 1)
-  await write(filePath, env)
-}
-
 async function monitor () {
   const env = JSON.parse(await read(filePath))
   if (!env.enode) await setEnode(env)
@@ -85,11 +96,11 @@ async function monitor () {
       sleep(3000)
     }
     for (let index = 0; index < env.nodes.length; index++) {
-      try {
-        (await post(env.nodes[index].IP, 'admin_nodeInfo', [])).result.id
-      } catch (e) {
+      if (!await checkExist(env.nodes[index].IP)) {
         console.log(`Remove ${env.nodes[index].IP}`)
-        await removeNode(env)
+        const number = env.nodes.indexOf(env.nodes[index].IP)
+        env.nodes.splice(number, 1)
+        await write(filePath, env)
       }
     }
   } else {
