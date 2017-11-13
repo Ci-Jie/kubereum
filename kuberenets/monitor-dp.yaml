@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: monitor
-        image: cijie/kubereum-monitor:0.1.2
+        image: cijie/kubereum-monitor:0.1.5
         env:
         - name: CREATE_ACCOUNT
           value: 'true'

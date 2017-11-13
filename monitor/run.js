@@ -96,6 +96,7 @@ async function monitor () {
       sleep(3000)
     }
     for (let index = 0; index < env.nodes.length; index++) {
+      if (process.env.CREATE_ACCOUNT === 'true' && env.nodes[index].account.length === 0) miner(index)
       if (!await checkExist(env.nodes[index].IP)) {
         console.log(`Remove ${env.nodes[index].IP}`)
         const number = env.nodes.indexOf(env.nodes[index].IP)
@@ -108,15 +109,15 @@ async function monitor () {
   }
 }
 
-async function miner () {
+async function miner (index) {
   const env = JSON.parse(await read(filePath));
-  for (let index = 0; index < env.nodes.length; index++) {
-    const account = (await post(env.nodes[index].IP, 'personal_newAccount', ["password"])).result
-    console.log(account)
-    await post(env.nodes[index].IP, 'personal_unlockAccount', [account, "password", 300])
-    await post(env.nodes[index].IP, 'miner_setEtherbase', [account])
-    console.log(await post(env.nodes[index].IP, 'miner_start', []))
-  }
+  const account = (await post(env.nodes[index].IP, 'personal_newAccount', ["password"])).result
+  env.nodes[index].account.push(account)
+  await write(filePath, env)
+  console.log(account)
+  await post(env.nodes[index].IP, 'personal_unlockAccount', [account, "password", 300])
+  await post(env.nodes[index].IP, 'miner_setEtherbase', [account])
+  console.log(await post(env.nodes[index].IP, 'miner_start', []))
 }
 
 async function main () {
