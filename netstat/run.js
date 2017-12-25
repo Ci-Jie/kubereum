@@ -14,6 +14,8 @@ async function main () {
   }
   shell.cd('/eth-netstats')
   shell.exec(`WS_SECRET=${WS_SECRET} npm start`)
+  if (!shell.error()) console.info(`Ethereum netstat started: ok`.green)
+  else console.info(`Ethereum netstat started: failed`.red)
 }
 
 main()
