@@ -14,11 +14,11 @@ RUN apt-get update && \
 	npm install && \
 	npm install -g grunt-cli && \
 	grunt && \
-	git clone http://git.nutc-imac.com/cjlee8110/kubereum.git && \
-	cd kubereum/dashboard && \
+	git clone https://github.com/Ci-Jie/kubereum.git && \
+	cd kubereum/netstat && \
 	npm install
 
-WORKDIR /eth-netstats/kubereum/dashboard
+WORKDIR /eth-netstats/kubereum/netstat
 
 EXPOSE 3000
 

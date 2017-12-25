@@ -23,7 +23,7 @@ spec:
           - name: netstat
             containerPort: 3000
         volumeMounts:
-        - mountPath: /eth-netstats/kubereum/dashboard/env
+        - mountPath: /eth-netstats/kubereum/netstat/env
           name: nfs-volume
       volumes:
       - name: nfs-volume
