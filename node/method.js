@@ -5,6 +5,7 @@ const colors = require('colors')
 import { read, write } from './source'
 
 const IP = os.networkInterfaces().eth0[0].address
+const envPath = '/eth-net-intelligence-api/kubereum/node/env'
 const WS_SECRET = process.env.WS_SECRET
 const RESTART = process.env.RESTART
 
@@ -34,7 +35,7 @@ const createChainID = () => {
 }
 
 const initData = dataName => {
-  shell.exec(`geth --datadir ./${dataName} init genesis.json`)
+  shell.exec(`geth --datadir ${envPath}/${dataName} init genesis.json`)
   if (shell.error()) console.info(`* Create data to new node : failed`.red)
   else console.info(`* Create data to new node : ok`.green)
 }
@@ -79,7 +80,7 @@ const run = async (nodeName, nodeData) => {
   shell.sed('-i', 'see http://forum.ethereum.org/discussion/2112/how-to-add-yourself-to-the-stats-dashboard-its-not-automatic', `${WS_SECRET}`, '/eth-net-intelligence-api/app.json')
   shell.exec('pm2 start /eth-net-intelligence-api/app.json')
   shell.cd('/eth-net-intelligence-api/kubereum/node')
-  shell.exec(`geth --datadir ${nodeData.dataDir} --networkid ${WS_SECRET}  --port 30303 --rpc --rpcapi=db,eth,net,web3,personal,miner --rpcaddr 0.0.0.0 --ws --wsaddr=0.0.0.0`)
+  shell.exec(`geth --datadir ${envPath}/${nodeData.dataDir} --networkid ${WS_SECRET}  --port 30303 --rpc --rpcapi=db,eth,net,web3,personal,miner --rpcaddr 0.0.0.0 --ws --wsaddr=0.0.0.0`)
 }
 
 export { addNode, createNodeName, run, setData }
