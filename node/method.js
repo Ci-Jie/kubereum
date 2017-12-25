@@ -6,6 +6,7 @@ import { read, write } from './source'
 
 const IP = os.networkInterfaces().eth0[0].address
 const WS_SECRET = process.env.WS_SECRET
+const RESTART = process.env.RESTART
 
 const addNode = async (nodeName, nodeData) => {
   const env = JSON.parse(await read())
@@ -47,14 +48,18 @@ const renameData = (oldName, newName) => {
 const setData = async (dataPath) => {
   const env = JSON.parse(await read())
   const dataName = createDataName()
-  let filesArray = []
-  let nodesArray = []
-  shell.cd(dataPath)
-  shell.ls('-d', 'data-*').forEach(file => filesArray.push(file))
-  for(let index in env.nodes) nodesArray.push(env.nodes[index].dataDir)
-  const datas = filesArray.concat(nodesArray).filter(v => !filesArray.includes(v) || !nodesArray.includes(v))
-  if (datas.length === 0) initData(dataName)
-  else renameData(datas[0], dataName)
+  if (RESTART === 'false') {
+    let filesArray = []
+    let nodesArray = []
+    shell.cd(dataPath)
+    shell.ls('-d', 'data-*').forEach(file => filesArray.push(file))
+    for(let index in env.nodes) nodesArray.push(env.nodes[index].dataDir)
+    const datas = filesArray.concat(nodesArray).filter(v => !filesArray.includes(v) || !nodesArray.includes(v))
+    if (datas.length === 0) initData(dataName)
+    else renameData(datas[0], dataName)
+  } else {
+    initData(dataName)
+  }
   return { 'IP': IP, 'dataDir': dataName }
 }
 

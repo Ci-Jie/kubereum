@@ -1,6 +1,5 @@
 import { addNode, createNodeName, run, setData } from './method'
 
-const RESTART = process.env.RESTART
 const DATA_PATH = '/eth-net-intelligence-api/kubereum/node/env'
 
 import { read, write } from './source'
