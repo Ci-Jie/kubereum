@@ -22,6 +22,6 @@ RUN apt-get update && \
 
 WORKDIR /eth-net-intelligence-api/kubereum/node
 
-EXPOSE 2000 8545
+EXPOSE 30303 8545
 
 ENTRYPOINT ["npm", "run", "start"]

@@ -1,59 +1,15 @@
-const shell = require('shelljs')
-const os = require('os')
-const fs = require('fs')
-const sleep = require('system-sleep')
+import { addNode, createNodeName, run, setData } from './method'
 
-const filePath = './env/global.json'
-const IP = os.networkInterfaces().eth0[0].address
+const RESTART = process.env.RESTART
+const DATA_PATH = '/eth-net-intelligence-api/kubereum/node/env'
 
-function checkNode (node, nodes) {
-  for (let index = 0; index < nodes.length; index++) if (node == nodes[index]) return true
-  return false
-}
-
-function read (fileName) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(fileName, 'utf8', (err, data) => {
-      if (err) reject(err)
-      else resolve(data)
-    })
-  })
-}
-
-function write (fileName, data) {
-  return new Promise((resolve, reject) => {
-    fs.writeFile(fileName, JSON.stringify(data), err => {
-      if (err) reject(err)
-      else resolve(true)
-    })
-  })
-}
-
-function run (env) {
-  const nodeName = `node-${Math.floor(Math.random() * (99999 - 1)) + 1}`
-  shell.exec('geth --datadir ./data/00 init genesis.json')
-  shell.cd('../../')
-  shell.sed('-i', 'localhost', IP, './app.json')
-  shell.sed('-i', '\"INSTANCE_NAME\"   : \"\"', '\"INSTANCE_NAME\"   : \"' + nodeName + '\"', './app.json')
-  shell.sed('-i', '\"wss://rpc.ethstats.net\"', '\"http://' + env.dashboardAddress + ':3000\"', './app.json')
-  shell.sed('-i', '\"see http://forum.ethereum.org/discussion/2112/how-to-add-yourself-to-the-stats-dashboard-its-not-automatic\"', '\"' + process.env.WS_SECRET + '\"', './app.json')
-  shell.exec('pm2 start app.json')
-  shell.cd('./kubereum/node')
-  shell.exec('geth --datadir ./data/00 --networkid ' + process.env.WS_SECRET + ' --port 2000 --rpc --rpcapi=db,eth,net,web3,personal,admin,miner --rpcaddr 0.0.0.0')
-}
+import { read, write } from './source'
 
 async function main () {
-  sleep(3000)
-  const env = JSON.parse(await read(filePath))
-  if (!checkNode(IP, env.nodes)) env.nodes.push({'IP': IP, 'account': []})
-  await write(filePath, env)
-  if (!env.chainID) {
-    const chainID = Math.floor(Math.random() * (999999999 - 1)) + 1
-    env.chainID = chainID
-    await write(filePath, env)
-  }
-  shell.sed('-i', '123', env.chainID, 'genesis.json')
-  run(env)
+  const nodeName = createNodeName()
+  const nodeData = await setData(DATA_PATH)
+  await addNode(nodeName, nodeData)
+  await run(nodeName, nodeData)
 }
 
 main()
