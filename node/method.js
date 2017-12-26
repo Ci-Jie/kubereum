@@ -78,7 +78,7 @@ const run = async (nodeName, nodeData) => {
   shell.sed('-i', `"INSTANCE_NAME"   : ""`, `"INSTANCE_NAME"   : "${nodeName}"`, '/eth-net-intelligence-api/app.json')
   shell.sed('-i', 'wss://rpc.ethstats.net', `http://${env.netstatIP}:3000`, '/eth-net-intelligence-api/app.json')
   shell.sed('-i', 'see http://forum.ethereum.org/discussion/2112/how-to-add-yourself-to-the-stats-dashboard-its-not-automatic', `${WS_SECRET}`, '/eth-net-intelligence-api/app.json')
-  shell.sed('/eth-net-intelligence-api')
+  shell.cd('/eth-net-intelligence-api')
   shell.exec('pm2 start app.json')
   shell.cd('/eth-net-intelligence-api/kubereum/node')
   shell.exec(`geth --datadir ${envPath}/${nodeData.dataDir} --networkid ${WS_SECRET}  --port 30303 --rpc --rpcapi=db,eth,net,web3,personal,miner --rpcaddr 0.0.0.0 --ws --wsaddr=0.0.0.0`)
