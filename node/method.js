@@ -11,7 +11,7 @@ const RESTART = process.env.RESTART
 
 const addNode = async (nodeName, nodeData) => {
   const env = JSON.parse(await read())
-  env.nodes.push({'name': nodeName, 'IP': nodeData.IP, 'dataDir': nodeData.dataDir})
+  env.nodes.push({'name': nodeName, 'IP': nodeData.IP, 'dataDir': nodeData.dataDir, 'mining': false})
   await write(env)
   console.info(`* Add Node (Name: ${nodeName}, IP: ${nodeData.IP}, DataDir: ${nodeData.dataDir}, mining: false) in Ethrerum : ok`.green)
 }
