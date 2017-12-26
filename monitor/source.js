@@ -45,6 +45,7 @@ function get (url) {
     const options = {
       method: 'GET',
       url: `http://${url}:8545`,
+      timeout: 3000,
       json: true
     }
     rp(options)

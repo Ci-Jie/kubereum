@@ -1,4 +1,4 @@
-import { setEnode } from './method'
+import { checkNodesHealthy, setEnode } from './method'
 
 // async function setEnode (env) {
 //   if (env.nodes.length > 0) {
@@ -60,6 +60,7 @@ import { setEnode } from './method'
 
 async function main () {
   await setEnode()
+  await checkNodesHealthy()
   // const env = JSON.parse(await read(filePath))
   // if (process.env.CREATE_ACCOUNT === 'true') miner()
   // await monitor()
