@@ -9,11 +9,25 @@ const envPath = '/eth-net-intelligence-api/kubereum/node/env'
 const WS_SECRET = process.env.WS_SECRET
 const RESTART = process.env.RESTART
 
+const checkNode = async (nodeData) => {
+  const env = JSON.parse(await read())
+  for (let index in env.nodes) {
+    if (env.nodes[index].IP === nodeData.IP) return { 'exist': true, 'index': index }
+  }
+  return { 'exist': false, 'index': '' }
+}
+
 const addNode = async (nodeName, nodeData) => {
   const env = JSON.parse(await read())
-  env.nodes.push({'name': nodeName, 'IP': nodeData.IP, 'dataDir': nodeData.dataDir, 'mining': false})
+  const checkRes = await checkNode(nodeData)
+  if (checkRes.exist) {
+    env.nodes[checkRes.index] = {'name': nodeName, 'IP': nodeData.IP, 'dataDir': nodeData.dataDir, 'mining': false}
+    console.info(`* Update Node (Name: ${nodeName}, IP: ${nodeData.IP}, DataDir: ${nodeData.dataDir}, mining: false) in Ethrerum : ok`.green)
+  } else {
+    env.nodes.push({'name': nodeName, 'IP': nodeData.IP, 'dataDir': nodeData.dataDir, 'mining': false})
+    console.info(`* Add Node (Name: ${nodeName}, IP: ${nodeData.IP}, DataDir: ${nodeData.dataDir}, mining: false) in Ethrerum : ok`.green)
+  }
   await write(env)
-  console.info(`* Add Node (Name: ${nodeName}, IP: ${nodeData.IP}, DataDir: ${nodeData.dataDir}, mining: false) in Ethrerum : ok`.green)
 }
 
 const createNodeName = () => {
