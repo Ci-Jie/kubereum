@@ -1,3 +1,5 @@
+const sleep = require('system-sleep')
+
 import { checkNodesHealthy, setEnode } from './method'
 
 // async function setEnode (env) {
@@ -59,8 +61,11 @@ import { checkNodesHealthy, setEnode } from './method'
 // }
 
 async function main () {
-  await setEnode()
-  await checkNodesHealthy()
+  while(true) {
+    await setEnode()
+    await checkNodesHealthy()
+    sleep(10000)
+  }
   // const env = JSON.parse(await read(filePath))
   // if (process.env.CREATE_ACCOUNT === 'true') miner()
   // await monitor()
