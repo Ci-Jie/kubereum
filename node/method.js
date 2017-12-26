@@ -13,7 +13,7 @@ const addNode = async (nodeName, nodeData) => {
   const env = JSON.parse(await read())
   env.nodes.push({'name': nodeName, 'IP': nodeData.IP, 'dataDir': nodeData.dataDir})
   await write(env)
-  console.info(`* Add Node (Name: ${nodeName}, IP: ${nodeData.IP}, DataDir: ${nodeData.dataDir}) in Ethrerum : ok`.green)
+  console.info(`* Add Node (Name: ${nodeName}, IP: ${nodeData.IP}, DataDir: ${nodeData.dataDir}, mining: false) in Ethrerum : ok`.green)
 }
 
 const createNodeName = () => {
