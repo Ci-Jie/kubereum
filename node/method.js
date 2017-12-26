@@ -81,7 +81,7 @@ const run = async (nodeName, nodeData) => {
   shell.cd('/eth-net-intelligence-api')
   shell.exec('pm2 start app.json')
   shell.cd('/eth-net-intelligence-api/kubereum/node')
-  shell.exec(`geth --datadir ${envPath}/${nodeData.dataDir} --networkid ${WS_SECRET}  --port 30303 --rpc --rpcapi=db,eth,net,web3,personal,miner --rpcaddr 0.0.0.0 --ws --wsaddr=0.0.0.0`)
+  shell.exec(`geth --datadir ${envPath}/${nodeData.dataDir} --networkid ${WS_SECRET}  --port 30303 --rpc --rpcapi=admin,db,eth,net,web3,personal,miner --rpcaddr 0.0.0.0 --ws --wsaddr=0.0.0.0`)
 }
 
 export { addNode, createNodeName, run, setData }

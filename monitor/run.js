@@ -1,8 +1,4 @@
-const sleep = require('system-sleep')
-const fs = require('fs')
-const request = require('request')
-const rp = require('request-promise')
-const filePath = './env/global.json'
+import { setEnode } from './method'
 
 // async function setEnode (env) {
 //   if (env.nodes.length > 0) {
@@ -63,12 +59,10 @@ const filePath = './env/global.json'
 // }
 
 async function main () {
+  await setEnode()
   // const env = JSON.parse(await read(filePath))
   // if (process.env.CREATE_ACCOUNT === 'true') miner()
-  while (true) {
-    // await monitor()
-    sleep(10000)
-  }
+  // await monitor()
 }
 
 main()

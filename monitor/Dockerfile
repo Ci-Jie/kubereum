@@ -10,7 +10,7 @@ RUN apt-get update && \
 	curl -sL https://deb.nodesource.com/setup_7.x | bash - && \
 	apt-get install nodejs && \
 	npm install && \
-	git clone http://git.nutc-imac.com/cjlee8110/kubereum.git && \
+	git clone https://github.com/Ci-Jie/kubereum.git && \
 	cd kubereum/monitor && \
 	npm install
 

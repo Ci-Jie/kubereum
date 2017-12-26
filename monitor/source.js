@@ -1,4 +1,5 @@
 const fs = require('fs')
+const rp = require('request-promise')
 
 const filePath = '/kubereum/monitor/env/global.json'
 
