@@ -48,8 +48,8 @@ const createChainID = () => {
   return chainID
 }
 
-const initData = dataName => {
-  shell.exec(`geth --datadir ${envPath}/${dataName} init genesis.json`)
+const initData = async (dataName) => {
+  await shell.exec(`geth --datadir ${envPath}/${dataName} init genesis.json`)
   if (shell.error()) console.info(`* Create data to new node : failed`.red)
   else console.info(`* Create data to new node : ok`.green)
 }
