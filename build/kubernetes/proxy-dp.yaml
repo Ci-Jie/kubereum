@@ -1,0 +1,28 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: proxy
+  namespace: kubereum
+  labels:
+    app: proxy
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: proxy
+      labels:
+        app: proxy
+    spec:
+      containers:
+      - name: proxy
+        image: cijie/kubereum-proxy:0.1.2
+        ports:
+          - name: proxy
+            containerPort: 3000
+        volumeMounts:
+        - mountPath: /kubereum/proxy/env
+          name: nfs-volume
+      volumes:
+      - name: nfs-volume
+        persistentVolumeClaim:
+          claimName: nfs-pvc

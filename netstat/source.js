@@ -1,4 +1,5 @@
 const fs = require('fs')
+const jsonFormat = require('json-format')
 
 const filePath = '/eth-netstats/kubereum/netstat/env/global.json'
 
@@ -13,7 +14,7 @@ const read = () => {
 
 const write = data => {
   return new Promise((resolve, reject) => {
-    fs.writeFile(filePath, JSON.stringify(data), err => {
+    fs.writeFile(filePath, jsonFormat(data, { type: 'space', size: 2 }), err => {
       if (err) reject(err)
       else resolve(true)
     })

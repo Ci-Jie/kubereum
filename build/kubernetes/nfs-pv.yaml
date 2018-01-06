@@ -1,0 +1,18 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: nfs-pv
+  namespace: kubereum
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Recycle
+  claimRef:
+    namespace: kubereum
+    name: nfs-pvc
+  storageClassName: slow
+  nfs:
+    path: '/var/nfsshare'
+    server: 10.20.0.82

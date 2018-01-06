@@ -1,10 +1,12 @@
 const sleep = require('system-sleep')
 
-import { checkNodesHealthy, setEnode } from './method'
+import { checkNodesHealthy, checkEnode, checkPeers, checkMining } from './method'
 
 async function main () {
   while(true) {
-    await setEnode()
+    await checkEnode()
+    await checkPeers()
+    await checkMining()
     await checkNodesHealthy()
     sleep(10000)
   }

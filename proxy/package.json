@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "start": "node app.js"
+  },
+  "devDependencies": {
+    "koa": "2.4.1",
+    "koa-router": "7.3.0",
+    "koa-bodyparser": "4.2.0",
+    "request": "2.83.0",
+    "request-promise": "4.2.2"
+  }
+}

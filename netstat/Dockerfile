@@ -14,7 +14,7 @@ RUN apt-get update && \
 	npm install && \
 	npm install -g grunt-cli && \
 	grunt && \
-	git clone https://github.com/Ci-Jie/kubereum.git && \
+	git clone http://git.nutc-imac.com/cjlee8110/kubereum.git && \
 	cd kubereum/netstat && \
 	npm install
 

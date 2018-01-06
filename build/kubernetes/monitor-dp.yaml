@@ -1,0 +1,33 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: monitor
+  namespace: kubereum
+  labels:
+    app: monitor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: monitor
+      labels:
+        app: monitor
+    spec:
+      containers:
+      - name: monitor
+        image: cijie/kubereum-monitor:0.1.1
+        env:
+        - name: CREATE_ACCOUNT
+          value: 'true'
+        ports:
+          - name: rpc
+            containerPort: 8545
+          - name: enode
+            containerPort: 2000
+        volumeMounts:
+        - mountPath: /kubereum/monitor/env
+          name: nfs-volume
+      volumes:
+      - name: nfs-volume
+        persistentVolumeClaim:
+          claimName: nfs-pvc

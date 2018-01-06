@@ -5,24 +5,34 @@ import { get, post, read, write } from './source'
 const getEnode = async (nodeIP) => {
   let enode = ''
   try {
-    enode = (await post(nodeIP, 'admin_nodeInfo', [])).result.id
-    console.info(`* Get enode (${enode}) : ok`.green)
+    enode = `enode://${(await post(nodeIP, 'admin_nodeInfo', [])).result.id}@${nodeIP}:30303`
+    console.info(`* Get enode ('${enode}') : ok`.green)
   } catch (e) { console.info(`* Get enode : failed`.red) }
   return enode
 }
 
+const checkEnode = async () => {
+  const env = JSON.parse(await read())
+  for (let index = 0; index < env.nodes.length; index++) {
+    let count = 0;
+    if (env.nodes[index].enode === "") {
+      await setEnode()
+      break
+    }
+    if (count === (env.nodes.length - 1)) console.info('* Check enode : ok'.green)
+  }
+}
+
 const setEnode = async () => {
   const env = JSON.parse(await read())
-  const firstNodeIP = env.nodes[0].IP
-  if (Object.keys(env.enode).length === 0 && (env.enode).constructor === Object) {
-    try {
-      const enode = await getEnode(firstNodeIP)
-      env.enode = { 'IP': firstNodeIP, 'enode': enode }
-      await write(env)
-      console.info(`* Set enode : ok`.green)
-    } catch (e) {
-      console.info(`* Set enode : failed`.red)
+  try {
+    for (let index = 0; index < env.nodes.length; index++) {
+      if (env.nodes[index].enode === "") env.nodes[index].enode = await getEnode(env.nodes[index].IP)
     }
+    await write(env)
+    console.info('* Set all of enode : ok'.green)
+  } catch (e) {
+    console.info('$ Set all of enode : failed'.red)
   }
 }
 
@@ -63,35 +73,57 @@ const startMining = async (nodeIP) => {
   if (unlockResult) {
     try {
       await post(nodeIP, 'setEtherbase', account)
-      await post(nodeIP, 'miner_start', [4])
-      console.info(`* Start mining : ok`.green)
+      await post(nodeIP, 'miner_start', [])
+      console.info(`* Start node (${nodeIP}) mining : ok`.green)
       return true
     } catch (e) {
-      console.info(`* Start mining : failed`.red)
+      console.info(`* Start node (${nodeIP}) mining : failed`.red)
       return false
     }
   }
 }
 
+const checkMining = async () => {
+  const env = JSON.parse(await read())
+  for (let index in env.nodes) {
+    if (env.nodes[index].status === 'notReady') {
+      const nodeIP = env.nodes[index].IP
+      await startMining(nodeIP)
+      env.nodes[index].status = 'ready'
+      await write(env)
+    }
+  }
+  console.info('* Check all nodes start mining : ok'.green)
+}
+
 const checkNodesHealthy = async () => {
   const env = JSON.parse(await read())
-  for( let index in env.nodes ) {
+  for(let index in env.nodes) {
     const nodeIP = env.nodes[index].IP
+    const nodeStatus = env.nodes[index].status
     if (await get(nodeIP)) {
-      console.info(`* Check node (${nodeIP}) : exist`.green)
-      if (!(env.nodes[index].mining)) {
-        const result = await startMining(nodeIP)
-        if (result) {
-          env.nodes[index].mining = true
-          await write(env)
-          console.info(`* Update env : ok`.green)
-        }
-      }
+      console.info(`* Check node (${nodeIP}) : ok`.green)
     } else {
-      console.info(`* Check node (${nodeIP}) : leave`.red)
-      removeNode(nodeIP)
+      if (nodeStatus === 'ready') removeNode(nodeIP)
+      console.info(`* Check node (${nodeIP}) : failed`.red)
     }
   }
 }
 
-export { checkNodesHealthy, setEnode }
+const checkPeers = async () => {
+  const env = JSON.parse(await read())
+  const peersCount = (await post(env.nodes[0].IP, 'admin_peers', [])).result.length
+  if (peersCount !== env.nodes.length - 1) {
+    const enode = env.nodes[0].enode
+    for (let index = 1; index < env.nodes.length; index++) {
+      try {
+        await post(env.nodes[index].IP, 'admin_addPeer', [enode])
+        console.info(`* Add node (${env.nodes[index].IP}) to Ethereum : ok`.green)
+      } catch (e) { console.info(`* Add node (${env.nodes[index].IP}) to Ethereum : failed`.red) }
+    }
+  } else {
+    console.info(`* Check peers : ok`.green)
+  }
+}
+
+export { checkNodesHealthy, checkPeers, checkEnode, checkMining }

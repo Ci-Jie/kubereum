@@ -16,7 +16,7 @@ RUN apt-get update && \
 	cd eth-net-intelligence-api && \
 	npm install && \
 	npm install -g pm2 && \
-	git clone https://github.com/Ci-Jie/kubereum.git && \
+	git clone http://git.nutc-imac.com/cjlee8110/kubereum.git && \
 	cd kubereum/node && \
 	npm install
 
