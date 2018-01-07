@@ -13,10 +13,6 @@ This repos is based on Kubernetes to develop private Ethereum example. Automated
 * Provide JSON RPC proxy for developers to call.
 * Provider Ethereum dashboard (netstat).
 
-Example logs:
-
-![](images/logs.png)
-
 ## Requirements
 
 * Current only supported `Ubuntu 16.04`
