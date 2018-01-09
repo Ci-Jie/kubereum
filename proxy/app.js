@@ -11,6 +11,13 @@ app.use(bodyParser())
 const filePath = '/kubereum/proxy/env/global.json'
 
 const post = (url, method, params) => {
+  const paramsArr = params.split(',')
+  let array = []
+  for (let index = 0; index < paramsArr.length; index++) {
+    if (paramsArr[index] === 'true') array.push(true)
+    else if (paramsArr[index] === 'false') array.push(false)
+    else array.push(paramsArr[index])
+  }
   return new Promise((resolve, reject) => {
     const options = {
       method: 'POST',
@@ -18,7 +25,7 @@ const post = (url, method, params) => {
       body: {
         'jsonrpc': '2.0',
         'method': method,
-        'params': params,
+        'params': array,
         'id': 74
       },
       json: true
