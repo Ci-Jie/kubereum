@@ -25,11 +25,11 @@ const deploySVC = async () => {
   else console.info('* Deploy netstat service : failed'.red)
 }
 
-const test = async () => {
+const test = async (K8S_MASTER_IP) => {
   let count = 0
   while (true) {
     const env = JSON.parse(await fs.read())
-    const res = await http.get(env.netstatIP, '3000')
+    const res = await http.get(K8S_MASTER_IP, '30001', '/')
     if (res) {
       console.info('* Test netstat service : ok'.green)
       break
