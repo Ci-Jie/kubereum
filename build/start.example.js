@@ -15,7 +15,7 @@ const REPLICAS = '4'
 const main = async () => {
   await k8s.masterConnected(K8S_MASTER_IP)
   await k8s.nodesConnected(K8S_NODE_IP)
-  if (STORAGE_SYS === 'NFS') await nfs.connected(K8S_MASTER_IP)
+  if (STORAGE_SYS === 'NFS') await nfs.connected(STORAGE_IP)
   if (!(await nfs.mounted(STORAGE_IP, STORAGE_PATH))) {
     await nfs.mount(STORAGE_IP, STORAGE_PATH)
     await nfs.copyFile('../env/genesis.json', './env/genesis.json')
@@ -24,7 +24,7 @@ const main = async () => {
   if (!(await netstat.check(K8S_MASTER_IP))) {
     await netstat.deployDP()
     await netstat.deploySVC()
-    await netstat.test()
+    await netstat.test(K8S_MASTER_IP)
   }
   await nodes.deployDP(REPLICAS)
   await monitor.deployDP()

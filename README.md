@@ -1,5 +1,7 @@
 # Kubereum
 
+> Kubereum = Ethereum + Kubernetes
+
 This repos is based on Kubernetes to develop private Ethereum example. Automated deployment reduces developer time spent setting up the Ethereum environment.
 
 ## Features
@@ -37,6 +39,50 @@ const REPLICAS = '4' // Ethereum miner node number
 ```
 
 RUN `./build/start.js`
+
+## Configuration
+
+If your nodes of kubernetes not enough resource, you need to modify `build/kubernetes/node-dp.yaml`. By default we use 3 core and 2GB memory to run ethereum node Pod, but kubereum will have an error when your kubernetes not any one node enough resources.
+
+```
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: node
+  namespace: kubereum
+  labels:
+    app: node
+spec:
+  replicas: 2
+  template:
+    metadata:
+      name: node
+      labels:
+        app: node
+    spec:
+      containers:
+      - name: node
+        image: cijie/kubereum-node:0.1.0
+        env:
+        - name: WS_SECRET
+          value: '88888'
+        ports:
+          - name: rpc
+            containerPort: 8545
+          - name: enode
+            containerPort: 2000
+        volumeMounts:
+        - mountPath: /eth-net-intelligence-api/kubereum/node/env
+          name: nfs-volume
+        resources:
+          requests:
+            memory: "2048Mi"
+            cpu: "3"
+          limits:
+            memory: "2048Mi"
+            cpu: "3"
+...
+```
 
 ## Dashboard
 
